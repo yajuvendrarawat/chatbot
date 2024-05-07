@@ -1,0 +1,19 @@
+# syntax=docker/dockerfile:1
+
+FROM python:3.9-ubi8
+
+COPY ./requirements.txt . 
+
+RUN --mount=type=cache,target=/root/.cache  pip install --timeout 100 -r requirements.txt
+
+RUN --mount=type=cache,target=/root/.cache CMAKE_ARGS="-DLLAMA_CUBLAS=on" FORCE_CMAKE=1 pip install --upgrade --force-reinstall llama-cpp-python
+#COPY SOURCE_DOCUMENTS ./SOURCE_DOCUMENTS
+
+WORKDIR /
+COPY . .
+RUN chmod +x /app.py
+
+ENV device_type=cuda
+
+EXPOSE 8501
+ENTRYPOINT ["streamlit", "run", "app.py", "--server.port=8501", "--server.address=0.0.0.0"]
