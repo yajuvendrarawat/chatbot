@@ -65,7 +65,7 @@ def create_conversational_chain(vector_store):
                         #model_type="llama", config={'max_new_tokens': 500, 'temperature': 0.01})
     llm = Replicate(
         streaming = True,
-        model = "replicate/llama-2-70b-chat:58d078176e02c219e11eb4da5a02a7830a283b14cf8f94537af893ccff5ee781", 
+        model = "yajuvendra/Llama-2-7b-chat-finetune", 
         callbacks=[StreamingStdOutCallbackHandler()],
         input = {"temperature": 0.01, "max_length" :500,"top_p":1})
     memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
@@ -110,7 +110,7 @@ def main():
 
         # Create embeddings
         embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2", 
-                                           model_kwargs={'device': 'cpu'})
+                                           model_kwargs={'device': 'cuda'})
 
         # Create vector store
         vector_store = FAISS.from_documents(text_chunks, embedding=embeddings)
